@@ -64,6 +64,34 @@ app.add_middleware(
 )
 
 # ==========================================================================
+# HEALTH CHECK ENDPOINTS
+# ==========================================================================
+
+@app.get("/")
+async def root():
+    """Root endpoint with basic API information"""
+    return {
+        "message": "Excel Transformer API is running",
+        "version": "1.0.0",
+        "endpoints": {
+            "health": "/health",
+            "docs": "/docs",
+            "transform": "/transform-excel",
+            "upload": "/upload-excel"
+        }
+    }
+
+@app.get("/health")
+async def health_check():
+    """Health check endpoint for monitoring"""
+    return {
+        "status": "healthy",
+        "timestamp": pd.Timestamp.now().isoformat(),
+        "openai_configured": bool(OPENAI_API_KEY),
+        "cloudinary_configured": bool(os.getenv("CLOUDINARY_CLOUD_NAME"))
+    }
+
+# ==========================================================================
 # PYDANTIC MODELS
 # ==========================================================================
 
